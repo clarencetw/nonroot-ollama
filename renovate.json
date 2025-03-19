@@ -7,11 +7,9 @@
   "packageRules": [
     {
       "matchPackageNames": ["ollama"],
-      "matchUpdateTypes": ["major", "minor", "patch"],
       "groupName": "ollama",
       "groupSlug": "ollama",
       "allowedVersions": ">=0.5.0",
-      "versioning": "semver",
       "prBodyColumns": [
         "Package",
         "Type",
@@ -32,7 +30,6 @@
     "separateMultipleMajor": true
   },
   "persistRepoData": true,
-  "cacheManager": "local",
   "platformCommit": true,
   "platform": "github"
 } 
