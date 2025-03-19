@@ -3,6 +3,7 @@ name: Publish Docker image
 on:
   push:
     branches: [ "main" ]
+    tags: [ "v*" ]
   pull_request:
     branches: [ "main" ]
 
@@ -17,6 +18,15 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
+      
+      - name: Set Ollama version
+        id: set_version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            echo "OLLAMA_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          else
+            echo "OLLAMA_VERSION=latest" >> $GITHUB_ENV
+          fi
       
       - name: Log in to Docker Hub
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
@@ -39,12 +49,8 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/nonroot-ollama
             ghcr.io/${{ github.repository }}
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
+            type=ref,event=tag
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
       
       - name: Build and push Docker image
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
@@ -53,3 +59,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            OLLAMA_VERSION=${{ env.OLLAMA_VERSION }}

@@ -1,4 +1,4 @@
-FROM ollama/ollama
+FROM ollama/ollama:${OLLAMA_VERSION:-latest}
 USER root
 
 RUN groupadd -g 1001 ollama && \
