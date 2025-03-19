@@ -25,7 +25,8 @@ jobs:
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             echo "OLLAMA_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
           else
-            echo "OLLAMA_VERSION=latest" >> $GITHUB_ENV
+            OLLAMA_VERSION=$(grep "FROM ollama/ollama:" Dockerfile | cut -d':' -f2)
+            echo "OLLAMA_VERSION=${OLLAMA_VERSION:-latest}" >> $GITHUB_ENV
           fi
       
       - name: Log in to Docker Hub
@@ -51,6 +52,7 @@ jobs:
           tags: |
             type=ref,event=tag
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=${{ env.OLLAMA_VERSION }},enable=${{ github.ref == 'refs/heads/main' }}
       
       - name: Build and push Docker image
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671

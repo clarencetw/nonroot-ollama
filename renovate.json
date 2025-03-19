@@ -3,20 +3,19 @@
   "extends": [
     "config:base"
   ],
-  "schedule": ["every sunday"],
+  "schedule": ["every 6 hours"],
   "packageRules": [
     {
       "matchPackageNames": ["ollama"],
       "groupName": "ollama",
-      "groupSlug": "ollama",
       "allowedVersions": ">=0.5.0",
-      "prBodyColumns": [
-        "Package",
-        "Type",
-        "Current",
-        "New",
-        "Change"
-      ]
+      "matchCurrentVersion": ">=0.5.0",
+      "automerge": true,
+      "automergeType": "branch",
+      "commitMessageAction": "to {{newVersion}}",
+      "commitMessageTopic": "Ollama",
+      "commitMessageExtra": "",
+      "labels": ["ollama-update"]
     }
   ],
   "labels": ["dependencies"],
@@ -25,11 +24,6 @@
   "rangeStrategy": "pin",
   "semanticCommits": "enabled",
   "docker": {
-    "pinDigests": true,
-    "separateMajorMinor": true,
-    "separateMultipleMajor": true
-  },
-  "persistRepoData": true,
-  "platformCommit": true,
-  "platform": "github"
+    "pinDigests": true
+  }
 } 
